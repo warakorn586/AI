@@ -1,0 +1,167 @@
+{
+  "name": "Lab01",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Register",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "ชื่อ-นามสกุล",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "อีเมล",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "หลักสูตรที่สมัคร",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "วุฒิการศึกษาล่าสุด",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "เกรดเฉลี่ย",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "ประสบการณ์ทำงาน",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "เหตุผลที่สมัคร",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Submit"
+        }
+      },
+      "id": "994f7a77-9539-46e6-afa5-0c4694b4694b",
+      "name": "On form submission",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        112
+      ],
+      "webhookId": "be65ed71-aa25-415e-8cc0-b1ce5870e133",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=📋 ข้อมูลผู้สมัครเรียนบัณฑิตศึกษา\n\n👤 ชื่อ-นามสกุล: {{ $json['ชื่อ-นามสกุล'] }}\n📧 อีเมล: {{ $json['อีเมล'] }}\n🎓 หลักสูตรที่สมัคร: {{ $json['หลักสูตรที่สมัคร'] }}\n📚 วุฒิการศึกษาสูงสุด: {{ $json['วุฒิการศึกษาล่าสุด'] }}\n⭐ เกรดเฉลี่ย: {{ $json['เกรดเฉลี่ย'] }}\n💼 ประสบการณ์ทำงาน: {{ $json['ประสบการณ์ทำงาน'] }}\n✍️ เหตุผลที่สมัคร: {{ $json['เหตุผลที่สมัคร'] }}\n📅 วันที่สมัคร: {{ $json['submittedAt'] }}",
+        "options": {
+          "systemMessage": "คุณคือผู้เชี่ยวชาญด้านการคัดเลือกนิสิตระดับบัณฑิตศึกษา \nวิเคราะห์ข้อมูลผู้สมัครและให้คำแนะนำ\n\nกรุณาวิเคราะห์ตามหัวข้อดังนี้:\n1. จุดแข็ง (3-4 ข้อ)\n2. จุดที่ควรพิจารณา (2-3 ข้อ)\n3. คะแนนความเหมาะสม (1-10)\n4. คำแนะนำการรับ (รับ/พิจารณาเพิ่มเติม/ไม่แนะนำ)\n5. เหตุผลสรุป (2-3 ประโยค)\n\nตอบเป็นภาษาไทย กระชับ ชัดเจน"
+        }
+      },
+      "id": "6dde700b-90e4-4d6d-a4b5-953c76f8afab",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        224,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "id": "01d94008-1a71-49b1-a4c3-f059ad33501b",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        304,
+        336
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "E0YfiNduwNJjCDrE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "warakorn@tni.ac.th",
+        "subject": "Register",
+        "message": "=<!DOCTYPE html>\n<html lang=\"th\">\n<head>\n    <meta charset=\"UTF-8\">\n    <style>\n        body { font-family: 'Sarabun', Arial, sans-serif; background: #f4f7fa; padding: 20px; }\n        .container { max-width: 650px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }\n        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 30px 20px; text-align: center; }\n        .header h1 { font-size: 26px; margin: 0; }\n        .content { padding: 30px 25px; }\n        .section { background: #f8f9fc; border-radius: 8px; padding: 20px; margin-bottom: 20px; }\n        .section h2 { color: #667eea; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #e1e4f3; padding-bottom: 10px; }\n        .info-row { padding: 8px 0; border-bottom: 1px solid #e8ebf3; }\n        .label { font-weight: 600; color: #555; display: inline-block; width: 150px; }\n        .value { color: #333; }\n        .ai-analysis { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px; }\n        .footer { background: #f8f9fc; padding: 20px; text-align: center; color: #666; font-size: 13px; border-top: 3px solid #667eea; }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>🎓 ผู้สมัครเรียนบัณฑิตใหม่</h1>\n            <p>มีผู้สมัครใหม่เข้าระบบ - ผลการวิเคราะห์โดย AI</p>\n        </div>\n        \n        <div class=\"content\">\n            <div class=\"section\">\n                <h2>📝 ข้อมูลผู้สมัคร</h2>\n                <div class=\"info-row\">\n                    <div class=\"label\">👤 ชื่อ-นามสกุล:</div>\n                    <div class=\"value\">{{ $('On form submission').item.json['ชื่อ-นามสกุล'] }}</div>\n                </div>\n                <div class=\"info-row\">\n                    <div class=\"label\">📧 อีเมล:</div>\n                    <div class=\"value\">{{ $('On form submission').item.json['อีเมล'] }}</div>\n                </div>\n                <div class=\"info-row\">\n                    <div class=\"label\">🎓 หลักสูตร:</div>\n                    <div class=\"value\">{{ $('On form submission').item.json['หลักสูตรที่สมัคร'] }}</div>\n                </div>\n                <div class=\"info-row\">\n                    <div class=\"label\">📚 วุฒิการศึกษา:</div>\n                    <div class=\"value\">{{ $('On form submission').item.json['วุฒิการศึกษาล่าสุด'] }}</div>\n                </div>\n                <div class=\"info-row\">\n                    <div class=\"label\">⭐ เกรดเฉลี่ย:</div>\n                    <div class=\"value\">{{ $('On form submission').item.json['เกรดเฉลี่ย'] }}</div>\n                </div>\n                <div class=\"info-row\">\n                    <div class=\"label\">💼 ประสบการณ์:</div>\n                    <div class=\"value\">{{ $('On form submission').item.json['ประสบการณ์ทำงาน'] }}</div>\n                </div>\n                <div class=\"info-row\">\n                    <div class=\"label\">✍️ เหตุผล:</div>\n                    <div class=\"value\">{{ $('On form submission').item.json['เหตุผลที่สมัคร'] }}</div>\n                </div>\n                <div class=\"info-row\">\n                    <div class=\"label\">📅 วันที่สมัคร:</div>\n                    <div class=\"value\">{{ $('On form submission').item.json['submittedAt'] }}</div>\n                </div>\n            </div>\n            \n            <div class=\"ai-analysis\">\n                <h2 style=\"color: #856404; margin-top: 0;\">🤖 ผลการวิเคราะห์โดย AI</h2>\n                <div style=\"white-space: pre-wrap; line-height: 1.8; color: #333;\">{{ $json.output }}</div>\n            </div>\n            \n            <div class=\"section\">\n                <p style=\"text-align: center; color: #666;\">\n                    📧 ติดต่อผู้สมัคร: <strong>{{ $('On form submission').item.json['อีเมล'] }}</strong>\n                </p>\n            </div>\n        </div>\n        \n        <div class=\"footer\">\n            <p>📧 อีเมลนี้ถูกส่งอัตโนมัติจากระบบรับสมัครนิสิตบัณฑิตศึกษา</p>\n            <p>Powered by n8n + Groq AI</p>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "1566f203-f5ce-4928-b95b-75c2d18f6e24",
+      "name": "Send a message",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        576,
+        112
+      ],
+      "webhookId": "6d4164df-0f5f-4922-b27a-df1f510ad2a6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MtHmc7HWYIaiiOAT",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "22ecf2c1-2bdd-466c-8659-03160e1dd5ac",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ae99c5ce2586426c2b9cb976ff88a977f29aadce82fd261037362f137bbaf2cb"
+  },
+  "nodeGroups": [],
+  "id": "pM0w47OpkrFVHEnV",
+  "tags": []
+}
